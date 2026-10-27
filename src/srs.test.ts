@@ -1,10 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { COUNTRIES } from "./countries";
-import { grade, INTERVALS, MAX_BOX, pickNext, stats } from "./srs";
+import { grade, INTERVALS, MASTERED_BOX, MAX_BOX, pickNext, stats } from "./srs";
 
 describe("grade", () => {
-  test("knowing a new card puts it in box 1", () => {
-    expect(grade(undefined, true, 0)).toEqual({ box: 1, due: INTERVALS[1] });
+  test("knowing a new card marks it as mastered", () => {
+    expect(grade(undefined, true, 0)).toEqual({ box: MASTERED_BOX, due: INTERVALS[MASTERED_BOX] });
+  });
+
+  test("missing a new card puts it in box 1", () => {
+    expect(grade(undefined, false, 0)).toEqual({ box: 1, due: INTERVALS[1] });
   });
 
   test("knowing moves up one box, capped at the top", () => {

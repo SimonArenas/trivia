@@ -14,7 +14,9 @@ export const MAX_BOX = INTERVALS.length - 1;
 export const MASTERED_BOX = 4;
 
 export function grade(state: CardState | undefined, knew: boolean, now: number): CardState {
-  const box = knew ? Math.min((state?.box ?? 0) + 1, MAX_BOX) : 1;
+  // A new card known on first sight is already learned: skip the short boxes
+  // so known flags don't keep coming back during the session.
+  const box = !knew ? 1 : state ? Math.min(state.box + 1, MAX_BOX) : MASTERED_BOX;
   return { box, due: now + INTERVALS[box] };
 }
 
