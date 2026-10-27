@@ -13,7 +13,21 @@ import { load, save } from "./storage";
 
 const PROGRESS_KEY = "banderas.progress.v1";
 const CONTINENTS_KEY = "banderas.continents.v1";
+const KIND_KEY = "banderas.kind.v1";
 const BY_CODE = new Map(COUNTRIES.map((c) => [c.code, c]));
+
+type Kind = "all" | "sovereign" | "other";
+const KINDS: [Kind, string][] = [
+  ["all", "Todos"],
+  ["sovereign", "Soberanos"],
+  ["other", "No soberanos"],
+];
+
+// Limited-recognition states count as sovereign here: they're declared states, not territories.
+function matchesKind(c: Country, kind: Kind): boolean {
+  const sovereign = c.status === "sovereign" || c.status === "limited";
+  return kind === "all" || (kind === "sovereign") === sovereign;
+}
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -44,9 +58,14 @@ export default function App() {
   );
   // Shuffled once per visit so new cards come in random order.
   const [order] = useState(() => shuffle(COUNTRIES.map((c) => c.code)));
+  const [kind, setKind] = useState<Kind>(() => load(KIND_KEY, "all"));
   const deck = useMemo(
-    () => order.filter((code) => continents.includes(BY_CODE.get(code)!.continent)),
-    [order, continents],
+    () =>
+      order.filter((code) => {
+        const c = BY_CODE.get(code)!;
+        return continents.includes(c.continent) && matchesKind(c, kind);
+      }),
+    [order, continents, kind],
   );
 
   const [current, setCurrent] = useState<string | null>(null);
@@ -167,6 +186,21 @@ export default function App() {
             </button>
           ))}
         </div>
+        <div className="segmented" role="radiogroup" aria-label="Tipo">
+          {KINDS.map(([k, label]) => (
+            <button
+              key={k}
+              role="radio"
+              aria-checked={kind === k}
+              onClick={() => {
+                setKind(k);
+                save(KIND_KEY, k);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <Meter mastered={s.mastered} learning={s.learning} total={s.total} />
         <dl className="stats">
           <div>
@@ -208,6 +242,11 @@ export default function App() {
               <kbd>Espacio</kbd> voltear · <kbd>1</kbd> no lo sabía · <kbd>2</kbd> lo sabía
             </p>
           </>
+        ) : deck.length === 0 ? (
+          <div className="done">
+            <h2>Sin banderas</h2>
+            <p>No hay banderas que cumplan este filtro. Prueba con otro continente o tipo.</p>
+          </div>
         ) : (
           <div className="done">
             <h2>¡Estás al día!</h2>
