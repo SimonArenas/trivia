@@ -10,7 +10,7 @@ Flash cards para aprenderse las banderas y capitales del mundo. De frente ves so
 - **Todo en español**: nombres de países y capitales.
 - **Etiquetas**: en el frente, arriba a la derecha, el continente y si es país soberano, de reconocimiento limitado o no soberano. En el reverso, el detalle (por ejemplo, "Territorio de Francia" o "Nación del Reino Unido").
 - **Zoom**: con el mouse sobre la bandera se amplía para ver los detalles (escudos, estrellas, etc.).
-- **Repetición espaciada (sistema Leitner)**: después de voltear marcas **Lo sabía** o **No lo sabía**. Las que fallas vuelven al minuto; las que sabes tardan cada vez más (10 min, 1 día, 3 días, 7 días, 21 días). Una tarjeta cuenta como dominada desde la caja 4.
+- **Repetición espaciada (sistema Leitner)**: marcas **Lo sabía** o **No lo sabía**. No hace falta voltear la tarjeta para responder, así despachas rápido las que ya te sabes. Las que fallas vuelven al minuto; las que sabes tardan cada vez más (10 min, 1 día, 3 días, 7 días, 21 días). Una tarjeta cuenta como dominada desde la caja 4.
 - **Filtro por continente**, para estudiar por partes.
 - **Progreso guardado en el navegador** (localStorage), sin cuentas ni servidor.
 - Funciona en computador y celular, con modo claro y oscuro.

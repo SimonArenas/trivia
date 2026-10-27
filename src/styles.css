@@ -343,12 +343,6 @@ main {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  transition: opacity 0.2s;
-}
-
-.answers[data-visible="false"] {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .answers button,

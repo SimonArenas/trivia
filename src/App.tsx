@@ -89,15 +89,15 @@ export default function App() {
     [current, progress, deck, practiceAhead],
   );
 
-  // While the answer is showing, fetch whichever flag comes next.
+  // Fetch whichever flag comes next, since the user can answer at any moment.
   useEffect(() => {
-    if (!flipped || !current) return;
+    if (!current) return;
     const t = Date.now();
     for (const knew of [true, false]) {
       const next = { ...progress, [current]: grade(progress[current], knew, t) };
       preload(pickNext(deck, next, t, current, practiceAhead));
     }
-  }, [flipped, current, progress, deck, practiceAhead]);
+  }, [current, progress, deck, practiceAhead]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -105,15 +105,15 @@ export default function App() {
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
         setFlipped((f) => !f);
-      } else if (flipped && (e.key === "1" || e.key === "ArrowLeft")) {
+      } else if (e.key === "1" || e.key === "ArrowLeft") {
         answer(false);
-      } else if (flipped && (e.key === "2" || e.key === "ArrowRight")) {
+      } else if (e.key === "2" || e.key === "ArrowRight") {
         answer(true);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [current, flipped, answer]);
+  }, [current, answer]);
 
   const chooseContinents = (next: Continent[]) => {
     if (!next.length) return;
@@ -194,11 +194,12 @@ export default function App() {
               flipped={flipped}
               onFlip={() => setFlipped((f) => !f)}
             />
-            <div className="answers" data-visible={flipped}>
-              <button className="no" onClick={() => answer(false)} disabled={!flipped}>
+            {/* Answerable without flipping, to clear cards you already know quickly. */}
+            <div className="answers">
+              <button className="no" onClick={() => answer(false)}>
                 No lo sabía <kbd>1</kbd>
               </button>
-              <button className="yes" onClick={() => answer(true)} disabled={!flipped}>
+              <button className="yes" onClick={() => answer(true)}>
                 Lo sabía <kbd>2</kbd>
               </button>
             </div>
