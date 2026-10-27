@@ -194,12 +194,13 @@ export default function App() {
               flipped={flipped}
               onFlip={() => setFlipped((f) => !f)}
             />
-            {/* Answerable without flipping, to clear cards you already know quickly. */}
-            <div className="answers">
-              <button className="no" onClick={() => answer(false)}>
+            {/* Buttons only on the back to keep the front clean; keys 1/2 work on
+                either side, to clear cards you already know quickly. */}
+            <div className="answers" data-visible={flipped}>
+              <button className="no" onClick={() => answer(false)} disabled={!flipped}>
                 No lo sabía <kbd>1</kbd>
               </button>
-              <button className="yes" onClick={() => answer(true)}>
+              <button className="yes" onClick={() => answer(true)} disabled={!flipped}>
                 Lo sabía <kbd>2</kbd>
               </button>
             </div>
