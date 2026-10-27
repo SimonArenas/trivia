@@ -8,7 +8,7 @@ const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 
 /** Wait before a card in box N is due again (index = box). */
-export const INTERVALS = [0, 1 * MINUTE, 10 * MINUTE, 1 * DAY, 3 * DAY, 7 * DAY, 21 * DAY];
+export const INTERVALS = [0, 5 * MINUTE, 10 * MINUTE, 1 * DAY, 3 * DAY, 7 * DAY, 21 * DAY];
 export const MAX_BOX = INTERVALS.length - 1;
 /** Box from which a card counts as learned. */
 export const MASTERED_BOX = 4;
