@@ -1,0 +1,370 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #f4f1ea;
+  --surface: #fffdf8;
+  --text: #1d1b16;
+  --muted: #6b665b;
+  --line: #e2dccf;
+  --accent: #1f6f5c;
+  --accent-soft: #cfe5dc;
+  --warn: #b4472f;
+  --warn-soft: #f3d9d0;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px -12px rgb(40 30 10 / 0.25);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161c;
+    --surface: #1e2129;
+    --text: #ece9e2;
+    --muted: #9a978f;
+    --line: #2f333d;
+    --accent: #5cc3a3;
+    --accent-soft: #1f3b33;
+    --warn: #ef8a70;
+    --warn-soft: #43261f;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 Inter, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.app {
+  max-width: 560px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h1,
+h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+.chip {
+  flex: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+.meter {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.meter span {
+  transition: width 0.4s ease;
+}
+
+.meter .mastered {
+  background: var(--accent);
+}
+
+.meter .learning {
+  background: color-mix(in srgb, var(--accent) 40%, var(--line));
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.stats div {
+  display: flex;
+  gap: 6px;
+}
+
+.stats dt::after {
+  content: ":";
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Flip card */
+
+.card {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3.4;
+  padding: 0;
+  border: 0;
+  background: none;
+  perspective: 1400px;
+}
+
+.card-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+.card[data-flipped="true"] .card-inner {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.back {
+  transform: rotateY(180deg);
+  text-align: center;
+}
+
+.front img {
+  max-width: 100%;
+  max-height: 72%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08), 0 6px 18px -6px rgb(0 0 0 / 0.3);
+}
+
+.tag {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.tap {
+  position: absolute;
+  bottom: 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.back .mini {
+  height: 44px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+
+.back h2 {
+  font-size: clamp(1.5rem, 6vw, 2.1rem);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.capital {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.capital span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.capital strong {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-wrap: balance;
+}
+
+.capital .none {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Answer buttons */
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  transition: opacity 0.2s;
+}
+
+.answers[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.answers button,
+.done button {
+  border: 0;
+  border-radius: 14px;
+  padding: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.no {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.yes {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+kbd {
+  font: 500 0.7rem/1 Inter, system-ui, sans-serif;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: 1px solid currentColor;
+  opacity: 0.6;
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Keyboard hints make no sense on touch screens. */
+@media (hover: none) {
+  .hint,
+  .answers kbd {
+    display: none;
+  }
+}
+
+.done {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.done p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+.done button {
+  padding: 14px 28px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+footer a {
+  color: inherit;
+}
+
+.link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-inner {
+    transition: none;
+  }
+}
