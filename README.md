@@ -1,12 +1,25 @@
 # Banderas del mundo
 
-Flash cards para aprender las banderas y capitales de 249 países y territorios de [flagcdn.com](https://flagcdn.com): los códigos ISO 3166-1, Kosovo y las cuatro naciones del Reino Unido. Se excluyen los territorios cuya bandera es idéntica a la de su país (Bouvet, Svalbard, Heard y McDonald, San Martín francés e Islas Ultramarinas de EE. UU.).
+**App en vivo: https://trivia-olive-two.vercel.app**
 
-De frente solo se ve la bandera; al tocarla se voltea y muestra el país, su capital y dos etiquetas: el continente y el estatus (país soberano, reconocimiento limitado, territorio o nación del Reino Unido). Después marcas **Lo sabía** o **No lo sabía**, y la repetición espaciada (sistema Leitner) decide cuándo vuelve cada tarjeta: las que fallas regresan en un minuto, y las que sabes cada vez tardan más (10 min, 1 día, 3 días, 7 días, 21 días). Una tarjeta cuenta como dominada desde la caja 4.
+Flash cards para aprenderse las banderas y capitales del mundo. De frente ves solo la bandera; al tocarla, la tarjeta se voltea y muestra el país y su capital. Tú decides si lo sabías o no, y la app se encarga de repetirte más seguido las que te cuestan.
 
-El progreso se guarda en el navegador (localStorage), sin cuentas ni servidor.
+## Qué incluye
 
-## Uso
+- **249 tarjetas**: todos los países y territorios ISO 3166-1 de [flagcdn.com](https://flagcdn.com), Kosovo y las cuatro naciones del Reino Unido (Inglaterra, Escocia, Gales e Irlanda del Norte). Se excluyen los territorios cuya bandera es idéntica a la de su país (Bouvet, Svalbard, Heard y McDonald, San Martín francés e Islas Ultramarinas de EE. UU.), porque no se pueden distinguir solo con la bandera.
+- **Todo en español**: nombres de países y capitales.
+- **Etiquetas**: en el frente, arriba a la derecha, el continente y si es país soberano, de reconocimiento limitado o no soberano. En el reverso, el detalle (por ejemplo, "Territorio de Francia" o "Nación del Reino Unido").
+- **Zoom**: con el mouse sobre la bandera se amplía para ver los detalles (escudos, estrellas, etc.).
+- **Repetición espaciada (sistema Leitner)**: después de voltear marcas **Lo sabía** o **No lo sabía**. Las que fallas vuelven al minuto; las que sabes tardan cada vez más (10 min, 1 día, 3 días, 7 días, 21 días). Una tarjeta cuenta como dominada desde la caja 4.
+- **Filtro por continente**, para estudiar por partes.
+- **Progreso guardado en el navegador** (localStorage), sin cuentas ni servidor.
+- Funciona en computador y celular, con modo claro y oscuro.
+
+Teclado: `Espacio` voltea, `1` no lo sabía, `2` lo sabía.
+
+## Desarrollo
+
+Requiere [Bun](https://bun.sh).
 
 ```bash
 bun install
@@ -15,14 +28,12 @@ bun run check    # tipos + tests
 bun run build    # sitio estático en dist/
 ```
 
-Teclado: `Espacio` voltea, `1` no lo sabía, `2` lo sabía.
+Stack: Vite + React + TypeScript.
 
-## Estructura
-
-- `src/countries.ts`: nombres, capitales (en español), continente y estatus de cada bandera.
+- `src/countries.ts`: nombres, capitales, continente y estatus de cada bandera.
 - `src/srs.ts`: repetición espaciada (cajas, intervalos, qué tarjeta sigue).
 - `src/App.tsx`: la interfaz.
 
-## Desplegar en Vercel
+## Despliegue
 
-Importa el repo en Vercel: detecta Vite solo (build `bun run build`, salida `dist`).
+Desplegado en Vercel y conectado a este repo: cada push a `main` publica una nueva versión.

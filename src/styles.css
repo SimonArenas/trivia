@@ -199,10 +199,39 @@ main {
 
 .front img {
   max-width: 100%;
-  max-height: 60%;
+  max-height: 66%;
   object-fit: contain;
   border-radius: 4px;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08), 0 6px 18px -6px rgb(0 0 0 / 0.3);
+  transform-origin: var(--zx, 50%) var(--zy, 50%);
+  transition: transform 0.2s ease;
+}
+
+/* Zoom into the flag on hover (mouse only; touch screens have no hover). */
+@media (hover: hover) {
+  .front img:hover {
+    transform: scale(2.2);
+    cursor: zoom-in;
+  }
+
+  .front:has(img:hover) :is(.tag, .tap) {
+    opacity: 0;
+  }
+}
+
+.front :is(.tag, .tap) {
+  transition: opacity 0.2s;
+}
+
+
+.front {
+  overflow: hidden;
+}
+
+.front .tag,
+.front .tags,
+.front .tap {
+  z-index: 1;
 }
 
 .tag {
@@ -269,12 +298,30 @@ main {
   gap: 6px;
 }
 
+/* On very narrow phones the corner tags can wrap to two rows. */
+@media (max-width: 360px) {
+  .front img {
+    max-height: 54%;
+    margin-top: 24px;
+  }
+}
+
+.tags.corner {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  /* Leave room for the "Nueva/Repaso" label; wrap instead of overlapping it. */
+  left: 80px;
+  justify-content: flex-end;
+}
+
 .pill {
   font-size: 0.75rem;
   font-weight: 500;
   padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid var(--line);
+  background: var(--surface);
   color: var(--muted);
 }
 

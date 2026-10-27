@@ -248,6 +248,14 @@ function Meter({ mastered, learning, total }: { mastered: number; learning: numb
   );
 }
 
+// Hover zoom: scale the flag around the cursor. offsetX/Y are in the image's
+// untransformed coordinates, so the origin doesn't drift while it's scaled.
+function zoomAt(e: React.MouseEvent<HTMLImageElement>) {
+  const img = e.currentTarget;
+  img.style.setProperty("--zx", `${(e.nativeEvent.offsetX / img.offsetWidth) * 100}%`);
+  img.style.setProperty("--zy", `${(e.nativeEvent.offsetY / img.offsetHeight) * 100}%`);
+}
+
 function Card({
   country,
   isNew,
@@ -269,8 +277,13 @@ function Card({
       <div className="card-inner">
         <div className="face front" aria-hidden={flipped}>
           <span className="tag">{isNew ? "Nueva" : "Repaso"}</span>
-          <img src={flagUrl(country.code)} alt="Bandera por adivinar" draggable={false} />
-          <div className="tags">
+          <img
+            src={flagUrl(country.code)}
+            alt="Bandera por adivinar"
+            draggable={false}
+            onMouseMove={zoomAt}
+          />
+          <div className="tags corner">
             <span className="pill">{country.continent}</span>
             <span className="pill" data-status={country.status}>
               {shortStatusLabel(country)}
