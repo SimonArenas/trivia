@@ -51,6 +51,18 @@ export function statusLabel(c: Country): string {
   }
 }
 
+/** Coarse status for the front of the card: a hint that doesn't name the parent. */
+export function shortStatusLabel(c: Country): string {
+  switch (c.status) {
+    case "sovereign":
+      return "País soberano";
+    case "limited":
+      return "Reconocimiento limitado";
+    default:
+      return "No soberano";
+  }
+}
+
 type Row = [code: string, name: string, capital: string | null];
 type TerritoryRow = [code: string, name: string, capital: string | null, parent: string];
 

@@ -3,6 +3,7 @@ import {
   CONTINENTS,
   COUNTRIES,
   flagUrl,
+  shortStatusLabel,
   statusLabel,
   type Continent,
   type Country,
@@ -269,6 +270,12 @@ function Card({
         <div className="face front" aria-hidden={flipped}>
           <span className="tag">{isNew ? "Nueva" : "Repaso"}</span>
           <img src={flagUrl(country.code)} alt="Bandera por adivinar" draggable={false} />
+          <div className="tags">
+            <span className="pill">{country.continent}</span>
+            <span className="pill" data-status={country.status}>
+              {shortStatusLabel(country)}
+            </span>
+          </div>
           <span className="tap">Toca para ver la respuesta</span>
         </div>
         <div className="face back" aria-hidden={!flipped}>
