@@ -55,13 +55,23 @@ test("stats buckets cards", () => {
 });
 
 describe("country data", () => {
-  test("has 254 unique cards", () => {
+  test("has 249 unique cards", () => {
     const codes = COUNTRIES.map((c) => c.code);
     expect(new Set(codes).size).toBe(codes.length);
-    expect(codes.length).toBe(254);
+    expect(codes.length).toBe(249);
   });
 
-  test("has 197 sovereign states (193 UN + Vatican, Palestine, Kosovo, Taiwan)", () => {
-    expect(COUNTRIES.filter((c) => c.sovereign).length).toBe(197);
+  test("counts by status", () => {
+    const count = (s: string) => COUNTRIES.filter((c) => c.status === s).length;
+    expect(count("sovereign")).toBe(194); // 193 UN members + Vatican
+    expect(count("limited")).toBe(3); // Kosovo, Palestine, Taiwan
+    expect(count("constituent")).toBe(4);
+    expect(count("territory")).toBe(48);
+  });
+
+  test("every territory and constituent nation says who it depends on", () => {
+    for (const c of COUNTRIES) {
+      expect(Boolean(c.parent)).toBe(c.status === "territory" || c.status === "constituent");
+    }
   });
 });

@@ -262,9 +262,32 @@ main {
   font-style: italic;
 }
 
-.meta {
-  font-size: 0.8rem;
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pill {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
   color: var(--muted);
+}
+
+.pill[data-status="sovereign"] {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill[data-status="limited"] {
+  border-color: transparent;
+  background: var(--warn-soft);
+  color: var(--warn);
 }
 
 /* Answer buttons */

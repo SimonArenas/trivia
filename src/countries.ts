@@ -15,6 +15,16 @@ export const CONTINENTS: Continent[] = [
   "Antártida",
 ];
 
+export type Status =
+  /** UN member, or the Vatican (observer). */
+  | "sovereign"
+  /** Declared states recognized by only part of the world: Kosovo, Palestine, Taiwan. */
+  | "limited"
+  /** Dependent or disputed territory. */
+  | "territory"
+  /** England, Scotland, Wales and Northern Ireland. */
+  | "constituent";
+
 export type Country = {
   /** flagcdn code: ISO 3166-1 alpha-2 in lowercase, plus gb-eng/gb-sct/gb-wls/gb-nir. */
   code: string;
@@ -22,11 +32,30 @@ export type Country = {
   /** null when the place has no capital (uninhabited or no fixed seat). */
   capital: string | null;
   continent: Continent;
-  /** Sovereign state (UN member or observer, plus Kosovo and Taiwan). */
-  sovereign: boolean;
+  status: Status;
+  /** Territories and constituent nations: who they depend on, with the preposition
+   * ready for a label ("de Francia", "del Reino Unido", "en disputa"). */
+  parent?: string;
 };
 
+export function statusLabel(c: Country): string {
+  switch (c.status) {
+    case "sovereign":
+      return "País soberano";
+    case "limited":
+      return "Reconocimiento limitado";
+    case "constituent":
+      return `Nación ${c.parent}`;
+    case "territory":
+      return `Territorio ${c.parent}`;
+  }
+}
+
 type Row = [code: string, name: string, capital: string | null];
+type TerritoryRow = [code: string, name: string, capital: string | null, parent: string];
+
+const LIMITED = new Set(["xk", "ps", "tw"]);
+const CONSTITUENT = new Set(["gb-eng", "gb-sct", "gb-wls", "gb-nir"]);
 
 // Sovereign states first, then territories, grouped by continent.
 const SOVEREIGN: Record<Continent, Row[]> = {
@@ -159,7 +188,7 @@ const SOVEREIGN: Record<Continent, Row[]> = {
     ["np", "Nepal", "Katmandú"],
     ["om", "Omán", "Mascate"],
     ["pk", "Pakistán", "Islamabad"],
-    ["ps", "Palestina", "Ramala (sede administrativa)"],
+    ["ps", "Palestina", "Jerusalén Este (proclamada); Ramala (sede de gobierno)"],
     ["sg", "Singapur", "Singapur"],
     ["sy", "Siria", "Damasco"],
     ["lk", "Sri Lanka", "Sri Jayawardenepura Kotte"],
@@ -240,93 +269,100 @@ const SOVEREIGN: Record<Continent, Row[]> = {
   Antártida: [],
 };
 
-const TERRITORIES: Record<Continent, Row[]> = {
+const UK = "del Reino Unido";
+const FR = "de Francia";
+const NL = "de los Países Bajos";
+const US = "de Estados Unidos";
+const AU = "de Australia";
+const NZ = "de Nueva Zelanda";
+const DK = "de Dinamarca";
+
+// Territories whose flag is identical to their parent's (Bouvet, Svalbard,
+// Heard and McDonald, French Saint Martin, US Minor Outlying Islands) are left
+// out: there is no way to tell them apart from the flag alone.
+const TERRITORIES: Record<Continent, TerritoryRow[]> = {
   África: [
-    ["re", "Reunión (Francia)", "Saint-Denis"],
-    ["yt", "Mayotte (Francia)", "Mamoudzou"],
-    ["eh", "Sáhara Occidental", "El Aaiún"],
-    ["sh", "Santa Elena, Ascensión y Tristán de Acuña (R. U.)", "Jamestown"],
+    ["re", "Reunión", "Saint-Denis", FR],
+    ["yt", "Mayotte", "Mamoudzou", FR],
+    ["eh", "Sáhara Occidental", "El Aaiún", "en disputa"],
+    ["sh", "Santa Elena, Ascensión y Tristán de Acuña", "Jamestown", UK],
   ],
   América: [
-    ["ai", "Anguila (R. U.)", "The Valley"],
-    ["aw", "Aruba (Países Bajos)", "Oranjestad"],
-    ["bm", "Bermudas (R. U.)", "Hamilton"],
-    ["bq", "Caribe Neerlandés (Países Bajos)", "Kralendijk"],
-    ["cw", "Curazao (Países Bajos)", "Willemstad"],
-    ["gl", "Groenlandia (Dinamarca)", "Nuuk"],
-    ["gp", "Guadalupe (Francia)", "Basse-Terre"],
-    ["gf", "Guayana Francesa (Francia)", "Cayena"],
-    ["ky", "Islas Caimán (R. U.)", "George Town"],
-    ["fk", "Islas Malvinas (R. U.)", "Puerto Argentino / Stanley"],
-    ["tc", "Islas Turcas y Caicos (R. U.)", "Cockburn Town"],
-    ["vg", "Islas Vírgenes Británicas (R. U.)", "Road Town"],
-    ["vi", "Islas Vírgenes de los Estados Unidos", "Charlotte Amalie"],
-    ["mq", "Martinica (Francia)", "Fort-de-France"],
-    ["ms", "Montserrat (R. U.)", "Brades (de facto)"],
-    ["pr", "Puerto Rico (EE. UU.)", "San Juan"],
-    ["bl", "San Bartolomé (Francia)", "Gustavia"],
-    ["mf", "San Martín (Francia)", "Marigot"],
-    ["sx", "San Martín (Países Bajos)", "Philipsburg"],
-    ["pm", "San Pedro y Miquelón (Francia)", "San Pedro"],
+    ["ai", "Anguila", "The Valley", UK],
+    ["aw", "Aruba", "Oranjestad", NL],
+    ["bm", "Bermudas", "Hamilton", UK],
+    ["bq", "Caribe Neerlandés", "Kralendijk", NL],
+    ["cw", "Curazao", "Willemstad", NL],
+    ["gl", "Groenlandia", "Nuuk", DK],
+    ["gp", "Guadalupe", "Basse-Terre", FR],
+    ["gf", "Guayana Francesa", "Cayena", FR],
+    ["ky", "Islas Caimán", "George Town", UK],
+    ["fk", "Islas Malvinas", "Puerto Argentino / Stanley", "en disputa"],
+    ["tc", "Islas Turcas y Caicos", "Cockburn Town", UK],
+    ["vg", "Islas Vírgenes Británicas", "Road Town", UK],
+    ["vi", "Islas Vírgenes de los Estados Unidos", "Charlotte Amalie", US],
+    ["mq", "Martinica", "Fort-de-France", FR],
+    ["ms", "Montserrat", "Brades (de facto)", UK],
+    ["pr", "Puerto Rico", "San Juan", US],
+    ["bl", "San Bartolomé", "Gustavia", FR],
+    ["sx", "San Martín", "Philipsburg", NL],
+    ["pm", "San Pedro y Miquelón", "San Pedro", FR],
   ],
   Asia: [
-    ["hk", "Hong Kong (China)", "Hong Kong"],
-    ["mo", "Macao (China)", "Macao"],
-    ["io", "Territorio Británico del Océano Índico", "Diego García"],
+    ["hk", "Hong Kong", "Hong Kong", "de China"],
+    ["mo", "Macao", "Macao", "de China"],
+    ["io", "Territorio Británico del Océano Índico", "Diego García", UK],
   ],
   Europa: [
-    ["gb-eng", "Inglaterra (R. U.)", "Londres"],
-    ["gb-sct", "Escocia (R. U.)", "Edimburgo"],
-    ["gb-wls", "Gales (R. U.)", "Cardiff"],
-    ["gb-nir", "Irlanda del Norte (R. U.)", "Belfast"],
-    ["ax", "Åland (Finlandia)", "Mariehamn"],
-    ["gi", "Gibraltar (R. U.)", "Gibraltar"],
-    ["gg", "Guernsey (R. U.)", "Saint Peter Port"],
-    ["im", "Isla de Man (R. U.)", "Douglas"],
-    ["fo", "Islas Feroe (Dinamarca)", "Tórshavn"],
-    ["je", "Jersey (R. U.)", "Saint Helier"],
-    ["sj", "Svalbard y Jan Mayen (Noruega)", "Longyearbyen"],
+    ["gb-eng", "Inglaterra", "Londres", UK],
+    ["gb-sct", "Escocia", "Edimburgo", UK],
+    ["gb-wls", "Gales", "Cardiff", UK],
+    ["gb-nir", "Irlanda del Norte", "Belfast", UK],
+    ["ax", "Åland", "Mariehamn", "de Finlandia"],
+    ["gi", "Gibraltar", "Gibraltar", UK],
+    ["gg", "Guernsey", "Saint Peter Port", UK],
+    ["im", "Isla de Man", "Douglas", UK],
+    ["fo", "Islas Feroe", "Tórshavn", DK],
+    ["je", "Jersey", "Saint Helier", UK],
   ],
   Oceanía: [
-    ["cx", "Isla de Navidad (Australia)", "Flying Fish Cove"],
-    ["nf", "Isla Norfolk (Australia)", "Kingston"],
-    ["cc", "Islas Cocos (Australia)", "West Island"],
-    ["ck", "Islas Cook (Nueva Zelanda)", "Avarua"],
-    ["mp", "Islas Marianas del Norte (EE. UU.)", "Saipán"],
-    ["pn", "Islas Pitcairn (R. U.)", "Adamstown"],
-    ["um", "Islas Ultramarinas Menores de EE. UU.", null],
-    ["gu", "Guam (EE. UU.)", "Hagåtña"],
-    ["nu", "Niue (Nueva Zelanda)", "Alofi"],
-    ["nc", "Nueva Caledonia (Francia)", "Numea"],
-    ["pf", "Polinesia Francesa (Francia)", "Papeete"],
-    ["as", "Samoa Americana (EE. UU.)", "Pago Pago"],
-    ["tk", "Tokelau (Nueva Zelanda)", null],
-    ["wf", "Wallis y Futuna (Francia)", "Mata-Utu"],
+    ["cx", "Isla de Navidad", "Flying Fish Cove", AU],
+    ["nf", "Isla Norfolk", "Kingston", AU],
+    ["cc", "Islas Cocos", "West Island", AU],
+    ["ck", "Islas Cook", "Avarua", NZ],
+    ["mp", "Islas Marianas del Norte", "Saipán", US],
+    ["pn", "Islas Pitcairn", "Adamstown", UK],
+    ["gu", "Guam", "Hagåtña", US],
+    ["nu", "Niue", "Alofi", NZ],
+    ["nc", "Nueva Caledonia", "Numea", FR],
+    ["pf", "Polinesia Francesa", "Papeete", FR],
+    ["as", "Samoa Americana", "Pago Pago", US],
+    ["tk", "Tokelau", null, NZ],
+    ["wf", "Wallis y Futuna", "Mata-Utu", FR],
   ],
   Antártida: [
-    ["aq", "Antártida", null],
-    ["bv", "Isla Bouvet (Noruega)", null],
-    ["hm", "Islas Heard y McDonald (Australia)", null],
-    ["gs", "Islas Georgias del Sur y Sandwich del Sur (R. U.)", "King Edward Point"],
-    ["tf", "Tierras Australes y Antárticas Francesas", null],
+    ["aq", "Antártida", null, "bajo el Tratado Antártico"],
+    ["gs", "Islas Georgias del Sur y Sandwich del Sur", "King Edward Point", UK],
+    ["tf", "Tierras Australes y Antárticas Francesas", null, FR],
   ],
 };
 
-function build(rows: Record<Continent, Row[]>, sovereign: boolean): Country[] {
-  return CONTINENTS.flatMap((continent) =>
-    rows[continent].map(([code, name, capital]) => ({
-      code,
-      name,
-      capital,
-      continent,
-      sovereign,
-    })),
-  );
-}
-
-export const COUNTRIES: Country[] = [
-  ...build(SOVEREIGN, true),
-  ...build(TERRITORIES, false),
-];
+export const COUNTRIES: Country[] = CONTINENTS.flatMap((continent) => [
+  ...SOVEREIGN[continent].map(([code, name, capital]): Country => ({
+    code,
+    name,
+    capital,
+    continent,
+    status: LIMITED.has(code) ? "limited" : "sovereign",
+  })),
+  ...TERRITORIES[continent].map(([code, name, capital, parent]): Country => ({
+    code,
+    name,
+    capital,
+    continent,
+    status: CONSTITUENT.has(code) ? "constituent" : "territory",
+    parent,
+  })),
+]);
 
 export const flagUrl = (code: string) => `https://flagcdn.com/${code}.svg`;

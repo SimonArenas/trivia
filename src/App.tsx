@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CONTINENTS, COUNTRIES, flagUrl, type Continent, type Country } from "./countries";
+import {
+  CONTINENTS,
+  COUNTRIES,
+  flagUrl,
+  statusLabel,
+  type Continent,
+  type Country,
+} from "./countries";
 import { grade, pickNext, stats, type Progress } from "./srs";
 import { load, save } from "./storage";
 
@@ -277,10 +284,12 @@ function Card({
               <strong className="none">Sin capital</strong>
             )}
           </p>
-          <span className="meta">
-            {country.continent}
-            {!country.sovereign && " · Territorio"}
-          </span>
+          <div className="tags">
+            <span className="pill">{country.continent}</span>
+            <span className="pill" data-status={country.status}>
+              {statusLabel(country)}
+            </span>
+          </div>
         </div>
       </div>
     </button>
