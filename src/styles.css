@@ -406,6 +406,60 @@ kbd {
   opacity: 0.6;
 }
 
+.answers .wide {
+  grid-column: 1 / -1;
+}
+
+/* Written modes */
+
+.front .prompt {
+  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.write {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.write input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  /* 16px+ keeps iOS from zooming in on focus. */
+  font: 500 1.1rem/1.3 Inter, system-ui, sans-serif;
+  text-align: center;
+}
+
+.write input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.write input:read-only {
+  color: var(--muted);
+}
+
+.verdict {
+  margin: 0;
+  font-weight: 600;
+}
+
+.verdict[data-verdict="exact"],
+.verdict[data-verdict="close"] {
+  color: var(--accent);
+}
+
+.verdict[data-verdict="wrong"] {
+  color: var(--warn);
+}
+
 .hint {
   margin: 0;
   text-align: center;

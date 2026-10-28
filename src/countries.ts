@@ -377,4 +377,73 @@ export const COUNTRIES: Country[] = CONTINENTS.flatMap((continent) => [
   })),
 ]);
 
-export const flagUrl = (code: string) => `https://flagcdn.com/${code}.svg`;
+type Aliases = { name?: string[]; capital?: string[] };
+
+/** Extra accepted answers for the written modes: common names in Spanish or
+ * English that can't be derived from the displayed text. */
+export const ALIASES: Record<string, Aliases> = {
+  // África
+  cd: { name: ["RDC", "Congo-Kinsasa", "Zaire"], capital: ["Kinshasa"] },
+  cg: { name: ["Congo", "Congo-Brazzaville"] },
+  cf: { name: ["RCA"] },
+  ci: { name: ["Côte d'Ivoire", "Ivory Coast"], capital: ["Yamoussoukro"] },
+  sz: { name: ["Suazilandia", "Eswatini"] },
+  eg: { capital: ["Cairo"] },
+  et: { capital: ["Addis Abeba", "Addis Ababa"] },
+  td: { capital: ["N'Djamena"] },
+  bf: { capital: ["Ouagadougou"] },
+  mr: { capital: ["Nouakchott"] },
+  mw: { name: ["Malawi"], capital: ["Lilongwe"] },
+  sd: { capital: ["Khartoum"] },
+  ss: { capital: ["Juba"] },
+  dj: { name: ["Djibouti"], capital: ["Djibouti"] },
+  sh: { name: ["Santa Elena"] },
+  // América
+  us: { name: ["EE. UU.", "EEUU", "USA", "Estados Unidos de América", "United States"], capital: ["Washington"] },
+  vi: { name: ["Islas Vírgenes Estadounidenses"] },
+  fk: { name: ["Falkland", "Falklands"] },
+  bq: { name: ["Bonaire"] },
+  pm: { capital: ["Saint-Pierre"] },
+  // Asia
+  mm: { name: ["Myanmar", "Burma"], capital: ["Naypyidaw", "Nay Pyi Taw"] },
+  ae: { name: ["EAU", "Emiratos"], capital: ["Abu Dhabi"] },
+  bh: { name: ["Bahrein", "Bahrain"] },
+  tl: { name: ["Timor Leste", "East Timor"] },
+  tr: { name: ["Türkiye", "Turkey"] },
+  cn: { capital: ["Beijing"] },
+  in: { capital: ["Delhi", "New Delhi"] },
+  kp: { capital: ["Pyongyang"] },
+  kh: { capital: ["Phnom Penh"] },
+  la: { capital: ["Vientiane"] },
+  mn: { capital: ["Ulaanbaatar"] },
+  np: { capital: ["Kathmandu"] },
+  sa: { capital: ["Riyadh"] },
+  kz: { capital: ["Nur-Sultán"] },
+  kg: { capital: ["Bishkek"] },
+  tj: { capital: ["Dushanbe"] },
+  tm: { capital: ["Ashgabat"] },
+  uz: { capital: ["Tashkent"] },
+  bd: { name: ["Bangladesh"], capital: ["Dhaka", "Dacca"] },
+  bt: { capital: ["Thimphu"] },
+  ye: { capital: ["Sanaa"] },
+  om: { capital: ["Muscat"] },
+  ge: { capital: ["Tbilisi"] },
+  am: { capital: ["Yerevan"] },
+  lk: { capital: ["Kotte"] },
+  // Europa
+  gb: { name: ["UK", "Gran Bretaña", "United Kingdom"] },
+  nl: { name: ["Holanda", "Netherlands"] },
+  cz: { name: ["Chequia", "Czechia"] },
+  mk: { name: ["Macedonia"] },
+  ba: { name: ["Bosnia"] },
+  by: { name: ["Belarús", "Belarus"] },
+  md: { name: ["Moldova"] },
+  ua: { capital: ["Kyiv"] },
+  is: { capital: ["Reykjavik"] },
+  si: { capital: ["Ljubljana"] },
+  lt: { capital: ["Vilnius"] },
+  // Oceanía
+  ki: { capital: ["Tarawa"] },
+};
+
+export const flagUrl =(code: string) => `https://flagcdn.com/${code}.svg`;
