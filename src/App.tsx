@@ -72,20 +72,23 @@ export default function App() {
   const [continents, setContinents] = useState<Continent[]>(() =>
     load(CONTINENTS_KEY, CONTINENTS),
   );
-  // Shuffled once per visit so new cards come in random order.
-  const [order] = useState(() => shuffle(COUNTRIES.map((c) => c.code)));
   const [kind, setKind] = useState<Kind>(() => load(KIND_KEY, "all"));
+  // Bumped by "Borrar progreso" so the deck is rebuilt (and reshuffled).
+  const [round, setRound] = useState(0);
+  // Reshuffled every time the deck is rebuilt (new mode, filter or reset), so
+  // new cards never come in a repeated order.
   const deck = useMemo(
     () =>
-      order.filter((code) => {
-        const c = BY_CODE.get(code)!;
-        return (
-          continents.includes(c.continent) &&
-          matchesKind(c, kind) &&
-          (mode !== "capital" || c.capital !== null)
-        );
-      }),
-    [order, continents, kind, mode],
+      shuffle(
+        COUNTRIES.filter(
+          (c) =>
+            continents.includes(c.continent) &&
+            matchesKind(c, kind) &&
+            (mode !== "capital" || c.capital !== null),
+        ).map((c) => c.code),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [continents, kind, mode, round],
   );
 
   const [current, setCurrent] = useState<string | null>(null);
@@ -203,11 +206,8 @@ export default function App() {
     const label = MODES.find(([m]) => m === mode)![1];
     if (!confirm(`¿Borrar tu progreso en modo ${label}? Esto no se puede deshacer.`)) return;
     updateProgress({});
-    setPracticeAhead(false);
-    setFlipped(false);
-    setTyped("");
-    setVerdict(null);
-    setCurrent(pickNext(deck, {}, Date.now(), null, false));
+    // The new deck restarts the session (see the effect on `deck`).
+    setRound((r) => r + 1);
   };
 
   const s = stats(deck, progress, now);
